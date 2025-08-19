@@ -32,7 +32,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Inicializa App Check ANTES de getAuth/getFirestore
-initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LdiqaorAAAAAH-1eVoHe5o-BRO1hG20h1fk0A3-'),
+initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LfG6KsrAAAAAD2Ay2FPIW2GL6tfINepL0NscyAd'),
     isTokenAutoRefreshEnabled: true, // renueva tokens en segundo plano
 });
 
