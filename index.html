@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1"/>
+    <meta name="author" content="Sangrador Curiel Yael Sebastian"/>
+    <meta name="description" content="Invitación web para fiesta sorpresa de cumpleaños"/>
+    <title>Fiesta Sorpresa - Rafaela Flores</title>
+
+    <!-- Open Graph / Twitter -->
+    <meta property="og:title" content="Fiesta Sorpresa — Rafaela Flores">
+    <meta property="og:description" content="25 de octubre · 2:30 p.m. · Parroquia de San Agustín de Hipona">
+    <meta property="og:image" content="img/Rafita_5.jpeg">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_MX">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="theme-color" content="#529474">
+
+    <!-- Pedir a buscadores que NO indexen imágenes ni generen snippet -->
+    <meta name="robots" content="noimageindex,noarchive,nosnippet">
+
+    <!-- Bootstrap 5.3.3 (CSS) -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+    <link rel="icon" href="img/Sangrador_Icono.jpg" type="image/jpeg">
+
+    <style>
+    /* ——— Barreras básicas ——— */
+    html, body, img, video {
+        -webkit-user-select: none; user-select: none;
+        -webkit-touch-callout: none; /* iOS: evita “Guardar imagen” con long-press */
+    }
+    img, video { -webkit-user-drag: none; }
+    img::selection, video::selection { background: transparent; }
+
+    /* Capa transparente para zonas protegidas */
+    .protect { position: relative; }
+    .protect::after{
+        content:""; position:absolute; inset:0; background: transparent;
+    }
+    </style>
+</head>
+
+<body data-bs-spy="scroll" data-bs-target="#nav" data-bs-offset="96" tabindex="0">
+    
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top shadow-sm" style="background-color:#F8F1E6; border-bottom:1px solid rgba(0,0,0,.06);">
+        <div class="container">
+            <!-- Brand -->
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#inicio">
+                <img src="img/Sangrador_Icono.jpg" alt="Logo" class="rounded-circle" style="height:80px;width:80px;object-fit:cover;">
+                <span class="fw-semibold d-none d-md-inline">Fiesta Sorpresa 66 años Mamá Rafita</span>
+                <span class="fw-semibold d-md-none">Fiesta Sorpresa</span>
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#nav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="nav">
+                <ul class="navbar-nav ms-auto align-items-lg-center">
+                    <li class="nav-item">
+                        <a class="nav-link" href="#detalles">
+                            <i class="bi bi-info-circle me-1 text-success"></i>Detalles
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#video">
+                            <i class="bi bi-film me-1 text-success"></i>Video
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#mapa">
+                            <i class="bi bi-geo-alt me-1 text-success"></i>Mapa
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#album">
+                            <i class="bi bi-images me-1 text-success"></i>Álbum
+                        </a>
+                    </li>
+                    <li class="nav-item ms-lg-2 mt-2 mt-lg-0">
+                        <a class="btn btn-outline-success rounded-pill" id="btnRSVP" target="_blank" rel="noopener">
+                            <i class="bi bi-whatsapp me-1"></i>Confirmar
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown ms-lg-2 mt-2 mt-lg-0">
+                        <a class="btn btn-outline-dark rounded-pill dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false" id="adminMenuBtn">
+                            <i class="bi bi-shield-lock me-1"></i> Organizador
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li class="px-3 py-2 text-secondary small">Acceso exclusivo del organizador</li>
+                            <li>
+                                <button class="dropdown-item" id="cmdAdminOpen">
+                                    <i class="bi bi-box-arrow-in-right me-2"></i>Acceso organizador
+                                </button>
+                            </li>
+                            <li>
+                                <button class="dropdown-item d-none" id="cmdAdminPanel">
+                                    <i class="bi bi-collection me-2"></i>Ver dedicatorias
+                                </button>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <button class="dropdown-item d-none" id="cmdAdminLogout">
+                                    <i class="bi bi-box-arrow-right me-2"></i>Cerrar sesión
+                                </button>
+                            </li>
+                        </ul>
+                    </li>
+
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <header id="inicio" style="padding-top:96px;"></header>
+
+    <!-- Slider -->
+    <section id="galeria" class="container my-4">
+        <div class="p-3 p-md-4 rounded-4" style="background:#f1e3ce;">
+
+            <div id="clubesCarousel"class="carousel slide carousel-fade position-relative"data-bs-ride="carousel" data-bs-interval="4000" data-bs-pause="hover">
+
+                <div class="carousel-inner rounded-4 shadow overflow-hidden">
+                    <div class="carousel-item active">
+                        <div class="ratio ratio-21x9 protect">
+                            <img src="img/Rafita_1.jpeg" class="w-100 h-100 object-fit-cover" style="object-position:50% 10%;" alt="Rafaela">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="ratio ratio-21x9 protect">
+                            <img src="img/Rafita_2.jpeg" class="w-100 h-100 object-fit-cover" style="object-position:50% 25%;" alt="Rafaela y Esteban">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="ratio ratio-21x9 protect">
+                            <img src="img/Rafita_3.jpeg" class="w-100 h-100 object-fit-cover" style="object-position:50% 45%;" alt="Rafaela con hijos">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="ratio ratio-21x9 protect">
+                            <img src="img/Rafita_4.jpeg" class="w-100 h-100 object-fit-cover" style="object-position:50% 25%;" alt="Rafaela con hijos y nueros">
+                        </div>
+                    </div>
+                    <div class="carousel-item">
+                        <div class="ratio ratio-21x9 protect">
+                            <img src="img/Rafita_5.jpeg" class="w-100 h-100 object-fit-cover" style="object-position:50% 20%;" alt="Rafaela con su familia">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- viñeta sutil para enfoque -->
+                <div class="position-absolute top-0 start-0 w-100 h-100" style="pointer-events:none; box-shadow: inset 0 -80px 120px rgba(0,0,0,.22); border-radius:1rem;"></div>
+
+                <!-- indicadores (JS los genera) -->
+                <div class="carousel-indicators"></div>
+
+                <!-- flechas -->
+                <button class="carousel-control-prev" type="button" data-bs-target="#clubesCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon bg-dark rounded-circle" style="padding:10px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#clubesCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon bg-dark rounded-circle" style="padding:10px; filter:drop-shadow(0 2px 6px rgba(0,0,0,.35));"></span>
+                </button>
+            </div>
+
+            <!-- miniaturas -->
+            <!-- <div class="d-flex justify-content-center gap-2 gap-md-3 mt-3 mt-md-4 flex-wrap">
+                <a data-bs-target="#clubesCarousel" data-bs-slide-to="0" role="button">
+                    <img src="img/Rafita_1.jpeg" class="rounded-3 shadow-sm opacity-75" style="height:64px;width:112px;object-fit:cover;" alt="">
+                </a>
+                <a data-bs-target="#clubesCarousel" data-bs-slide-to="1" role="button">
+                    <img src="img/Rafita_2.jpeg" class="rounded-3 shadow-sm opacity-75" style="height:64px;width:112px;object-fit:cover;" alt="">
+                </a>
+                <a data-bs-target="#clubesCarousel" data-bs-slide-to="2" role="button">
+                    <img src="img/Rafita_3.jpeg" class="rounded-3 shadow-sm opacity-75" style="height:64px;width:112px;object-fit:cover;" alt="">
+                </a>
+                <a data-bs-target="#clubesCarousel" data-bs-slide-to="3" role="button">
+                    <img src="img/Rafita_4.jpeg" class="rounded-3 shadow-sm opacity-75" style="height:64px;width:112px;object-fit:cover;" alt="">
+                </a>
+                <a data-bs-target="#clubesCarousel" data-bs-slide-to="4" role="button">
+                    <img src="img/Rafita_5.jpeg" class="rounded-3 shadow-sm opacity-75" style="height:64px;width:112px;object-fit:cover;" alt="">
+                </a>
+            </div> -->
+        </div>
+    </section>
+
+    <!-- Countdown -->
+    <section id="contador" class="py-5" style="background-color:#FFFFFF; border-top:1px solid #E9E1D5; border-bottom:1px solid #E9E1D5;">
+        <div class="container text-center">
+
+            <span class="badge rounded-pill mb-3" style="background:#EDE1CD; color:#5D4F3F;">
+                <i class="bi bi-flower3 me-1"></i> Cuenta regresiva
+            </span>
+
+            <h2 class="fw-semibold mb-2" style="color:#2F3E39;"> 
+                Celebramos a <span id="nombreAbue">Rafaela Flores Valderrama</span> en sus <span id="edad">66</span> años
+            </h2>
+            <p id="subtitulo" class="mb-4" style="color:#7A807A;">
+                Una tarde para agradecer su amor, su vida y su abrazo de siempre.
+            </p>
+
+            <div class="d-inline-flex align-items-center gap-2 px-3 py-2 rounded-3 border shadow-sm mb-4" style="background:#F7FAF8; border-color:#E9E1D5;">
+                <i class="bi bi-calendar-event text-success"></i>
+                <span id="fechaHero" class="fw-medium" style="color:#2F3E39;"></span>
+            </div>
+
+
+            <div id="countdown" class="row g-3 justify-content-center">
+                <div class="col-6 col-md-3">
+                    <div class="card rounded-4 h-100" style="border:1px solid #E9E1D5; box-shadow:0 6px 18px rgba(79,138,109,.08);">
+                    <div class="card-body">
+                        <div id="cd-dias" class="fw-bold" style="font-size:2.8rem; line-height:1; color:#266147;">--</div>
+                        <div class="text-uppercase small" style="letter-spacing:.06em; color:#7A807A;">Días</div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card rounded-4 h-100" style="border:1px solid #E9E1D5; box-shadow:0 6px 18px rgba(79,138,109,.08);">
+                    <div class="card-body">
+                        <div id="cd-horas" class="fw-bold" style="font-size:2.8rem; line-height:1; color:#266147;">--</div>
+                        <div class="text-uppercase small" style="letter-spacing:.06em; color:#7A807A;">Horas</div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card rounded-4 h-100" style="border:1px solid #E9E1D5; box-shadow:0 6px 18px rgba(79,138,109,.08);">
+                    <div class="card-body">
+                        <div id="cd-min" class="fw-bold" style="font-size:2.8rem; line-height:1; color:#266147;">--</div>
+                        <div class="text-uppercase small" style="letter-spacing:.06em; color:#7A807A;">Min</div>
+                    </div>
+                    </div>
+                </div>
+                <div class="col-6 col-md-3">
+                    <div class="card rounded-4 h-100" style="border:1px solid #E9E1D5; box-shadow:0 6px 18px rgba(79,138,109,.08);">
+                    <div class="card-body">
+                        <div id="cd-sec" class="fw-bold" style="font-size:2.8rem; line-height:1; color:#266147;">--</div>
+                        <div class="text-uppercase small" style="letter-spacing:.06em; color:#7A807A;">Seg</div>
+                    </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dropdown: Agregar al calendario -->
+            <div class="btn-group mt-4">
+                <button type="button" class="btn btn-success btn-lg shadow-sm" style="background-color:#529474; border-color:#4F8A6D;">
+                    <i class="bi bi-calendar2-plus me-1"></i> Agregar al calendario
+                </button>
+                <button type="button" class="btn btn-success btn-lg dropdown-toggle dropdown-toggle-split shadow-sm" data-bs-toggle="dropdown" aria-expanded="false" style="background-color:#529474; border-color:#4F8A6D;">
+                    <span class="visually-hidden">Opciones</span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li>
+                    <a class="dropdown-item" id="lnkGoogleCal" target="_blank" rel="noopener">
+                        <i class="bi bi-google me-2"></i>Google Calendar
+                    </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                    <a class="dropdown-item" id="lnkICS" download="Fiesta_Rafaela.ics">
+                        <i class="bi bi-calendar-event me-2"></i>Descargar .ics (Apple/Outlook)
+                    </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </section>
+
+    <!-- Detalles -->
+    <section id="detalles" class="py-5" style="scroll-margin-top:96px; background-color:#F3F7F3;" >
+        <div class="container">
+            <div class="text-center mb-4">
+                <h2 class="fw-semibold">Detalles del evento</h2>
+                <p class="text-secondary">Guarda la fecha y comparte con la familia.</p>
+            </div>
+            <div class="row g-4 align-items-stretch">
+
+                <!-- Dress - Code  -->
+                <div class="col-md-4">
+                    <div class="p-4 h-100 bg-white rounded shadow-sm text-center">
+                        <div class="fs-3"><i class="bi bi-stars"></i></div>
+                        <h5 class="mt-2 mb-1">Dress code</h5>
+                        <p class="mb-1">Semi-formal</p>
+                        <p class="text-secondary mb-0">Sugerencia: Algo cómodo para bailar 💃🕺</p>
+                    </div>
+                </div>
+
+                <!-- Donde  -->
+                <div class="col-md-4">
+                    <div class="p-4 h-100 bg-white rounded shadow-sm text-center">
+                        <div class="fs-3"><i class="bi bi-geo-alt"></i></div>
+                        <h5 class="mt-2 mb-1">Dónde</h5>
+                        <p class="mb-1 fw-semibold" id="lugar">Iglesia: Parroquia de San Agustín de Hipona</p>
+                        <p class="text-secondary mb-0" id="direccion">Salón de Fiestas: Ubicado a un costado de la Parroquia de San Agustín de Hipona</p>
+                    </div>
+                </div>
+
+                <!-- Notas importantes -->
+                <div class="col-md-4">
+                    <div class="p-4 h-100 bg-white rounded shadow-sm">
+                        <div class="fs-3 text-center"><i class="bi bi-info-circle"></i></div>
+                        <h5 class="mt-2 mb-2 text-center">Notas importantes</h5>
+                        <ul class="mb-0 text-secondary" style="text-align:justify;">
+                        <li>Es una <strong>fiesta sorpresa</strong>, por favor no lo comentes con la homenajeada.</li>
+                        <li>Procura llegar a tiempo para dar la sorpresa juntos.</li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <div class="row g-4 mt-1">
+
+                <!-- Libro de dedicatorias -->
+                <div class="col-md-8">
+                <div class="p-4 h-100 bg-white rounded shadow-sm">
+                    <h5 class="mb-2">
+                    <i class="bi bi-journal-heart me-1"></i>Libro de dedicatorias
+                    </h5>
+
+                    <form id="formDedicatoria" class="mb-3">
+                        <div class="mb-2">
+                            <label class="form-label small mb-1" for="dNombre">Tu nombre</label>
+                            <input type="text" id="dNombre" class="form-control" maxlength="50" autocomplete="name" placeholder="Ej. María / Primo José">
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label small mb-1" for="dMensaje">Mensaje</label>
+                            <textarea id="dMensaje" class="form-control" rows="3" maxlength="500" required spellcheck="true" placeholder="Escribe unas palabras para la festejada..."></textarea>
+                            <div class="form-text"><span id="dContador">0</span>/500</div>
+                        </div>
+                        <div class="d-flex gap-2 flex-wrap">
+                            <button class="btn btn-primary flex-grow-1" type="submit" id="btnFirmar">
+                                <i class="bi bi-send me-1"></i>Firmar
+                            </button>
+                            <button class="btn btn-outline-secondary d-none" id="btnExportar" type="button" title="Descargar las dedicatorias visibles">
+                                <i class="bi bi-download"></i>
+                            </button>
+                        </div>
+                        <div class="form-text mt-1 d-flex justify-content-between">
+                            <span id="authInfo" class="text-secondary">Sesión: invitado</span>
+                            <span id="contadorFirmas" class="text-secondary"></span>
+                        </div>
+                    </form>
+
+                    <div id="listaDedicatorias" class="vstack gap-2" style="max-height: 380px; overflow:auto;">
+                    <!-- Aquí se renderizan las dedicatorias -->
+                    </div>
+                </div>
+                </div>
+
+                <!-- Itinerario -->
+                <div class="col-md-4">
+                    <div class="p-4 h-100 bg-white rounded shadow-sm">
+                        <h5 class="mb-3 text-center"><i class="bi bi-calendar-check me-1"></i>Itinerario</h5>
+                        <ul class="list-group">
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Llegada y sorpresa</span><span class="text-secondary">14:30 - 15:00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Misa</span><span class="text-secondary">15:00 - 16:00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Recepción Salón</span><span class="text-secondary">16:30 - 17:00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Comida y Brindis</span><span class="text-secondary">18:00 - 19:00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Pastel</span><span class="text-secondary">21:00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Baile</span><span class="text-secondary">19:00 - 01:00</span>
+                        </li>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span>Cierre</span><span class="text-secondary">01:00</span>
+                        </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <!-- Video -->
+    <section id="video" class="py-5" style="scroll-margin-top:96px; background-color:#FFFFFF; border-top:1px solid #E9E1D5;">
+        <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-semibold">Un mensajito para ella</h2>
+            <p class="text-secondary">Un video especial para celebrar su vida.</p>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-lg-9">
+            <div class="ratio ratio-16x9 rounded shadow-sm overflow-hidden">
+                <video id="videoAbue" controls playsinline poster="" src="" loading="lazy" controlsList="nodownload noplaybackrate" disablePictureInPicture oncontextmenu="return false"> </video>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Mapa -->
+    <section id="mapa" class="py-5 bg-light" style="scroll-margin-top:96px; background-color:#F3F7F3; border-top:1px solid #E9E1D5;">
+        <div class="container">
+        <div class="text-center mb-4">
+            <h2 class="fw-semibold">Cómo llegar</h2>
+            <p class="text-secondary">Te dejamos el mapa para que no haya pierde.</p>
+        </div>
+        <div class="row g-4">
+            <div class="col-lg-7">
+            <div class="ratio ratio-16x9 rounded overflow-hidden shadow-sm">
+                <iframe id="iframeMapa" src="" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+            </div>
+            </div>
+            <div class="col-lg-5">
+            <div class="p-4 h-100 bg-white rounded shadow-sm">
+                <h5 class="mb-2"><i class="bi bi-telephone me-1"></i>Confirmación</h5>
+                <p class="text-secondary">Por favor confirma tu asistencia por WhatsApp.</p>
+                
+                <!-- Enviar confirmación  -->
+                <div class="d-flex flex-wrap gap-2 mb-3">
+                <a class="btn btn-success flex-fill flex-md-grow-0" id="btnRSVP3" target="_blank" rel="noopener">
+                    <i class="bi bi-whatsapp me-1"></i> Enviar confirmación
+                </a>
+                <!-- Abrir en Google Maps -->
+                <a class="btn btn-outline-success flex-fill flex-md-grow-0" id="btnAbrirMaps" target="_blank" rel="noopener">
+                    <i class="bi bi-geo-alt me-1"></i> Abrir en Google Maps
+                </a>
+                </div>
+
+                <div class="small text-secondary">
+                <div><i class="bi bi-geo me-1"></i><span id="lugarSide">Parroquia de San Agustín de Hipona</span></div>
+                <div><i class="bi bi-pin-map me-1"></i><span id="direccionSide"></span></div>
+                <div><i class="bi bi-calendar-event me-1"></i><span id="fechaSide">25 de octubre de 2025 – 14:30 p.m.</span></div>
+                </div>
+            </div>
+            </div>
+        </div>
+        </div>
+    </section>
+
+    <!-- Álbum (paginado) -->
+    <section id="album" class="py-5" style="scroll-margin-top:96px; background-color:#FFFFFF; border-top:1px solid #E9E1D5;">
+    <div class="container">
+        <div class="text-center mb-4">
+        <h2 class="fw-semibold">Álbum de recuerdos</h2>
+        <p class="text-secondary">Desliza las páginas o toca una foto para abrirla.</p>
+        </div>
+
+        <div id="albumPager" class="carousel slide position-relative" data-bs-ride="false">
+        <div class="carousel-inner"></div>
+
+        <!-- Controles personalizados (sin CSS) -->
+        <button type="button" class="btn btn-light rounded-circle shadow position-absolute top-50 start-0 translate-middle-y ms-2 z-2" data-bs-target="#albumPager" data-bs-slide="prev" aria-label="Anterior">
+            <i class="bi bi-chevron-left fs-4"></i>
+        </button>
+        <button type="button" class="btn btn-light rounded-circle shadow position-absolute top-50 end-0 translate-middle-y me-2 z-2" data-bs-target="#albumPager" data-bs-slide="next" aria-label="Siguiente">
+            <i class="bi bi-chevron-right fs-4"></i>
+        </button>
+
+        <!-- Indicadores + contador -->
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <div class="carousel-indicators position-static m-0"></div>
+            <div id="albumPageCounter" class="text-secondary small"></div>
+        </div>
+        </div>
+    </div>
+    </section>
+
+
+    <!-- Modal Lightbox -->
+    <div class="modal fade" id="lightboxModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-xl">
+            <div class="modal-content bg-dark position-relative">
+
+            <!-- Cerrar (z-3 para que no lo tape nada) -->
+            <button type="button" class="btn-close btn-close-white position-absolute top-0 end-0 m-3 z-3" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+
+            <div class="modal-body p-0">
+                <div id="lightboxCarousel" class="carousel slide" data-bs-interval="false">
+                <div class="carousel-inner"></div>
+
+                <!-- Controles personalizados -->
+                <button type="button" class="btn btn-light rounded-circle shadow position-absolute top-50 start-0 translate-middle-y ms-2 z-2" data-bs-target="#lightboxCarousel" data-bs-slide="prev" aria-label="Anterior">
+                    <i class="bi bi-chevron-left fs-4"></i>
+                </button>
+                <button type="button" class="btn btn-light rounded-circle shadow position-absolute top-50 end-0 translate-middle-y me-2 z-2" data-bs-target="#lightboxCarousel" data-bs-slide="next" aria-label="Siguiente">
+                    <i class="bi bi-chevron-right fs-4"></i>
+                </button>
+                </div>
+            </div>
+
+            </div>
+        </div>
+    </div>
+
+
+    
+    <!-- Footer -->
+    <footer style="background-color:#F8F1E6; border-top:1px solid #E9E1D5;">
+        <div class="container py-4">
+            <div class="row align-items-center gy-3">
+            
+            <!-- Marca -->
+            <div class="col-md-5 d-flex align-items-center gap-2">
+                <img src="img/Sangrador_Icono.jpg" alt="Logo"
+                    style="height:48px;width:48px;object-fit:cover;border-radius:50%;">
+                <div>
+                <div class="fw-semibold">SACY</div>
+                <div class="text-secondary small">El futuro se crea, no se espera.</div>
+                </div>
+            </div>
+
+            <!-- Contacto -->
+            <div class="col-md-4">
+                <div class="fw-semibold mb-2">Contacto</div>
+                <ul class="list-unstyled mb-0">
+                <!-- Correo -->
+                <li class="mb-1">
+                    <a href="mailto:yaelsangrador16@gmail.com" class="text-decoration-none link-dark">
+                        <i class="bi bi-envelope me-2"></i>yaelsangrador16@gmail.com
+                    </a>
+                </li>
+                <!-- Whatsaap -->
+                <li>
+                    <a href="https://wa.me/525529726239" target="_blank" rel="noopener" class="text-decoration-none link-dark">
+                    <i class="bi bi-whatsapp me-2"></i>+52 55 2972 6239
+                    </a>
+                </li>
+                </ul>
+            </div>
+
+            <!-- Elaborado -->
+            <div class="col-md-3 text-md-end">
+                <div class="fw-semibold">Creado por:</div>
+                <div class="me-2">Sangrador Curiel Yael Sebastian</div>
+            </div>
+
+            </div>
+
+            <hr class="my-3">
+
+            <!-- Derechos -->
+            <div class="d-flex flex-column flex-md-row justify-content-between text-secondary small">
+                <span>© <span id="anioFooter"></span> Todos los derechos reservados.</span>
+                <span class="mt-1 mt-md-0">Uso privado para familia y amigos.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Volver arriba -->
+    <button id="toTop" class="btn btn-success rounded-circle position-fixed d-flex align-items-center justify-content-center shadow" aria-label="Volver arriba" style="right:1rem; bottom:1rem; z-index:1030; width:52px; height:52px; opacity:0; transform:translateY(6px); transition:opacity .2s ease, transform .2s ease, box-shadow .2s ease;">
+        <i class="bi bi-arrow-up fs-5"></i>
+    </button>
+
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Lógica (ahora módulo) -->
+    <script type="module" src="main.js"></script>
+
+    <!-- Toast app -->
+    <div class="position-fixed top-0 end-0 p-3" style="z-index:1080">
+        <div id="appToast" class="toast align-items-center text-bg-success border-0" role="status" aria-live="polite" aria-atomic="true">
+            <div class="d-flex">
+            <div id="appToastBody" class="toast-body">¡Listo!</div>
+            <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Cerrar"></button>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="adminModal" tabindex="-1" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><i class="bi bi-shield-lock me-2"></i>Acceso organizador</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+            </div>
+            <div class="modal-body">
+                <p class="small text-secondary mb-3">Solo para el organizador. Se requerirá el correo autorizado.</p>
+
+                <div class="mb-3">
+                <label class="form-label small" for="adminEmail">Correo del organizador</label>
+                <input type="email" class="form-control" id="adminEmail" placeholder="tu_correo@gmail.com" autocomplete="email">
+                <div class="form-text">Usa el correo autorizado para continuar.</div>
+                </div>
+
+                <div class="d-grid">
+                <button class="btn btn-dark" id="btnGoogleLogin">
+                    <i class="bi bi-google me-2"></i>Entrar con Google
+                </button>
+                </div>
+
+                <div class="alert alert-danger d-none mt-3" id="adminError"></div>
+            </div>
+            </div>
+        </div>
+    </div>
+
+    
+</body>
+</html>
