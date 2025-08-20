@@ -188,6 +188,11 @@ function fechaBonita(date) {
     });
 })();
 
+document.getElementById('dNombre')?.addEventListener('input', (e) => {
+    const v = (e.target.value || '').trim();
+    if (v) localStorage.setItem('guestName', v);
+});
+
 
 // ==========================
 // Slider
