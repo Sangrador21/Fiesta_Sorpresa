@@ -70,13 +70,14 @@ const CONFIG = {
     direccion: 'Salón de Fiestas: Ubicado a un costado de la Parroquia de San Agustín de Hipona',
     mapsEmbed: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3758.922177104802!2d-99.2744894!3d19.5878345!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d21c74845a79af%3A0xc9ad05d37432a3b2!2sParroquia%20de%20San%20Agustin%20de%20Hipona!5e0!3m2!1ses-419!2smx!4v1754612072932!5m2!1ses-419!2smx',
     rsvpPhone: '525540118688',
-    // rsvpNombre: 'Yael Sangrador',
     pdfUrl: 'Rafaela_Flores_Invitacion.pdf',
     videoUrl: 'Rafaela_Flores_Video.mp4',
 
+    musicUrl: 'Ojitos_Mentirosos.mp3',
+
     mapsLink: 'https://maps.app.goo.gl/az2jSaFsnQRzbPfo8',
     mapsLat: '',      
-    mapsLng: '',      
+    mapsLng: '', 
     mapsPlaceId: ''  
 };
 
@@ -762,6 +763,129 @@ document.addEventListener("DOMContentLoaded", () => {
     toTop.addEventListener('mouseenter', () => (toTop.style.boxShadow = '0 14px 36px rgba(79,138,109,.32)'));
     toTop.addEventListener('mouseleave', () => (toTop.style.boxShadow = '0 10px 28px rgba(79,138,109,.25)'));
 })();
+
+
+// ==========================
+// Música de fondo (auto start, fallback mute)
+// ==========================
+(function setupBackgroundMusic(){
+    const btn   = document.getElementById('btnMusicFloat');
+    const icon  = document.getElementById('iconMusic');
+    const audio = document.getElementById('bgMusic');
+    const video = document.getElementById('videoAbue');
+    if (!btn || !audio) return;
+
+    // Fuente desde tu CONFIG
+    if (CONFIG?.musicUrl) audio.src = CONFIG.musicUrl;
+
+    const TARGET_VOL = 0.75;
+    audio.volume = TARGET_VOL;
+
+    // Helpers UI (solo clases Bootstrap)
+    function setBtnState(playing){
+        btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
+        btn.classList.toggle('btn-warning', playing);
+        btn.classList.toggle('btn-outline-secondary', !playing);
+        icon.classList.toggle('bi-music-note-beamed', playing);
+        icon.classList.toggle('bi-volume-mute', !playing);
+    }
+    function fadeTo(targetVol = 0, ms = 280){
+        targetVol = Math.max(0, Math.min(1, targetVol));
+        const steps = 10, stepTime = Math.max(16, Math.floor(ms/steps));
+        const delta = (targetVol - audio.volume) / steps;
+        return new Promise(res => {
+        let i = 0;
+        const it = setInterval(() => {
+            i++;
+            audio.volume = Math.max(0, Math.min(1, audio.volume + delta));
+            if (i >= steps) { clearInterval(it); audio.volume = targetVol; res(); }
+        }, stepTime);
+        });
+    }
+
+    async function hardAutoStart(){
+        // 1) Intento directo con sonido
+        try {
+        audio.muted = false;
+        audio.volume = TARGET_VOL;
+        await audio.play();
+        setBtnState(true);
+        return true;
+        } catch (e) {
+        // 2) Fallback permitido: arrancar muteado
+        try {
+            audio.muted = true;
+            await audio.play();
+            setBtnState(true);
+            // al primer gesto, desmuteamos con fade
+            const unlock = async () => {
+            document.removeEventListener('click', unlock, true);
+            document.removeEventListener('touchstart', unlock, true);
+            document.removeEventListener('keydown', unlock, true);
+            audio.muted = false;
+            audio.volume = 0;
+            await fadeTo(TARGET_VOL, 300);
+            };
+            document.addEventListener('click', unlock, true);
+            document.addEventListener('touchstart', unlock, true);
+            document.addEventListener('keydown', unlock, true);
+            return false;
+        } catch (err) {
+            setBtnState(false);
+            return false;
+        }
+        }
+    }
+
+    async function pauseMusic(){
+        await fadeTo(0, 160);
+        audio.pause();
+        setBtnState(false);
+        audio.volume = TARGET_VOL;
+    }
+
+    // Click del botón: toggle
+    btn.addEventListener('click', async () => {
+        if (audio.paused) {
+        // si estaba pausado, intentamos reproducir con sonido
+        const wasMuted = audio.muted;
+        const ok = await hardAutoStart();
+        if (!wasMuted && ok) await fadeTo(TARGET_VOL, 200);
+        } else {
+        await pauseMusic();
+        audio.muted = true; // para evitar bloqueos la próxima vez
+        }
+    });
+
+    // Mostrar/ocultar como el botón "Volver arriba"
+    (function linkToToTopBehavior(){
+        const showAfter = 600;
+        const show = () => { btn.style.opacity = '1'; btn.style.transform = 'translateY(0)'; };
+        const hide = () => { btn.style.opacity = '0'; btn.style.transform = 'translateY(6px)'; };
+        const toggle = () => (window.scrollY > showAfter ? show() : hide());
+        toggle(); window.addEventListener('scroll', toggle);
+    })();
+
+    // Pausar mientras el video se reproduce; reanudar al pausar/terminar
+    let shouldResumeAfterVideo = false;
+    if (video) {
+        video.addEventListener('play', async () => {
+        if (!audio.paused) { shouldResumeAfterVideo = true; await pauseMusic(); }
+        else shouldResumeAfterVideo = false;
+        });
+        video.addEventListener('pause', async () => {
+        if (shouldResumeAfterVideo) { await hardAutoStart(); shouldResumeAfterVideo = false; }
+        });
+        video.addEventListener('ended', async () => {
+        if (shouldResumeAfterVideo) { await hardAutoStart(); shouldResumeAfterVideo = false; }
+        });
+    }
+
+    // >>> Arranca al cargar la página <<<
+    hardAutoStart();
+})();
+
+
 
 // ===== Álbum paginado + lightbox =====
 document.addEventListener('DOMContentLoaded', () => {

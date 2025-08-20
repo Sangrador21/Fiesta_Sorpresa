@@ -554,11 +554,21 @@
         </div>
     </footer>
 
-    <!-- Volver arriba -->
-    <button id="toTop" class="btn btn-success rounded-circle position-fixed d-flex align-items-center justify-content-center shadow" aria-label="Volver arriba" style="right:1rem; bottom:1rem; z-index:1030; width:52px; height:52px; opacity:0; transform:translateY(6px); transition:opacity .2s ease, transform .2s ease, box-shadow .2s ease;">
-        <i class="bi bi-arrow-up fs-5"></i>
-    </button>
+    <!-- Wrapper fijo para los botones flotantes -->
+    <div class="position-fixed bottom-0 end-0 p-3 d-flex align-items-end gap-2" style="z-index:1030;">
+        <!-- Música -->
+        <button id="btnMusicFloat" class="btn btn-warning rounded-circle d-flex align-items-center justify-content-center shadow p-0" type="button" aria-label="Música" aria-pressed="true" style="width:52px;height:52px;opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease;">
+            <i id="iconMusic" class="bi bi-music-note-beamed fs-5"></i>
+        </button>
 
+        <!-- Volver arriba -->
+        <button id="toTop" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center shadow p-0" aria-label="Volver arriba" style="width:52px;height:52px;opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease;">
+            <i class="bi bi-arrow-up fs-5"></i>
+        </button>
+    </div>
+
+    <!-- Audio -->
+    <audio id="bgMusic" preload="auto" loop autoplay playsinline></audio>
 
     <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
