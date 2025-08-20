@@ -1,17 +1,6 @@
 // ==========================
-// IMPORTS Firebase (usa la versión que prefieras de 10.x)
+// IMPORTS Firebase por CDN (v12.1.0)
 // ==========================
-// import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-// import {
-//     getAuth, onAuthStateChanged, signInAnonymously,
-//     isSignInWithEmailLink, sendSignInLinkToEmail, signInWithEmailLink, signOut
-// } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-auth.js";
-// import {
-//     getFirestore, collection, addDoc, query, where, orderBy,
-//     onSnapshot, serverTimestamp, doc, getDoc, deleteDoc
-// } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore.js";
-
-// Firebase por CDN (v12.1.0)
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app.js";
 import { initializeAppCheck, ReCaptchaV3Provider } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-app-check.js";
 import { getAuth, onAuthStateChanged, signInAnonymously, signOut, GoogleAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult } from "https://www.gstatic.com/firebasejs/12.1.0/firebase-auth.js";
@@ -32,7 +21,7 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 
 // Inicializa App Check ANTES de getAuth/getFirestore
-initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LfG6KsrAAAAAD2Ay2FPIW2GL6tfINepL0NscyAd'),
+initializeAppCheck(app, { provider: new ReCaptchaV3Provider('6LdrBq0rAAAAAAgB2lc1fetDLz2gKnllrGX61UyQ'),
     isTokenAutoRefreshEnabled: true, // renueva tokens en segundo plano
 });
 
