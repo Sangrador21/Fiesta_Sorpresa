@@ -407,13 +407,7 @@ cmdAdminLogout?.addEventListener('click', async () => {
 
         if (!STATE.isAdmin) { STATE.unsubscribe?.(); STATE.unsubscribe = null; renderPrivado(); return; }
         startQuery();
-        });
-
-        cmdAdminLogout?.addEventListener('click', async () => {
-        try { await signOut(auth); await signInAnonymously(auth); showToast?.('Sesión cerrada.', 'success'); }
-        catch (e) { console.error(e); }
     });
-
 
     function startQuery() {
         if (STATE.unsubscribe) { STATE.unsubscribe(); STATE.unsubscribe = null; }
