@@ -764,9 +764,8 @@ document.addEventListener("DOMContentLoaded", () => {
     toTop.addEventListener('mouseleave', () => (toTop.style.boxShadow = '0 10px 28px rgba(79,138,109,.25)'));
 })();
 
-
 // ==========================
-// Música de fondo (auto start, fallback mute)
+// Música de fondo (autoplay con mute + unlock con primer gesto + reanudar tras video)
 // ==========================
 (function setupBackgroundMusic(){
     const btn   = document.getElementById('btnMusicFloat');
@@ -778,10 +777,17 @@ document.addEventListener("DOMContentLoaded", () => {
     // Fuente desde tu CONFIG
     if (CONFIG?.musicUrl) audio.src = CONFIG.musicUrl;
 
-    const TARGET_VOL = 0.75;
-    audio.volume = TARGET_VOL;
+    // Preferencia del usuario (true por defecto)
+    const PREF_KEY = 'musicEnabled';
+    const wantsMusic = () => localStorage.getItem(PREF_KEY) !== 'false';
+    const setWantsMusic = (val) => localStorage.setItem(PREF_KEY, val ? 'true' : 'false');
 
-    // Helpers UI (solo clases Bootstrap)
+    const TARGET_VOL = 0.75;
+    audio.volume = TARGET_VOL;       // volumen lógico
+    audio.loop = true;
+    audio.preload = 'auto';
+
+    // UI del botón
     function setBtnState(playing){
         btn.setAttribute('aria-pressed', playing ? 'true' : 'false');
         btn.classList.toggle('btn-warning', playing);
@@ -789,6 +795,19 @@ document.addEventListener("DOMContentLoaded", () => {
         icon.classList.toggle('bi-music-note-beamed', playing);
         icon.classList.toggle('bi-volume-mute', !playing);
     }
+    function showBtn(){
+        btn.style.opacity = '1';
+        btn.style.transform = 'translateY(0)';
+    }
+    function hideBtn(){
+        btn.style.opacity = '0';
+        btn.style.transform = 'translateY(6px)';
+    }
+    const showAfter = 600;
+    const toggleFloaters = () => (window.scrollY > showAfter ? (showBtn(),0) : (hideBtn(),0));
+    toggleFloaters(); window.addEventListener('scroll', toggleFloaters);
+
+    // Fade de volumen suave
     function fadeTo(targetVol = 0, ms = 280){
         targetVol = Math.max(0, Math.min(1, targetVol));
         const steps = 10, stepTime = Math.max(16, Math.floor(ms/steps));
@@ -803,87 +822,141 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    async function hardAutoStart(){
-        // 1) Intento directo con sonido
-        try {
-        audio.muted = false;
-        audio.volume = TARGET_VOL;
+    // iOS/Safari: "desbloquea" la cadena de audio con Web Audio en el primer gesto
+    let audioCtx;
+    async function primeAudioChain(){
+        try{
+        const Ctx = window.AudioContext || window.webkitAudioContext;
+        if (!Ctx) return;
+        audioCtx = audioCtx || new Ctx();
+        if (audioCtx.state === 'suspended') await audioCtx.resume();
+
+        // fuente silenciosa 1 sample para "primar" la sesión de audio
+        const buf = audioCtx.createBuffer(1, 1, audioCtx.sampleRate);
+        const src = audioCtx.createBufferSource();
+        src.buffer = buf; src.connect(audioCtx.destination); src.start(0);
+        }catch{}
+    }
+
+    // Autoplay seguro: arranca muteado (permitido en todos)
+    async function autoplayMuted(){
+        try{
+        audio.muted = true;         // clave para que el autoplay no sea bloqueado
         await audio.play();
         setBtnState(true);
         return true;
-        } catch (e) {
-        // 2) Fallback permitido: arrancar muteado
-        try {
-            audio.muted = true;
-            await audio.play();
-            setBtnState(true);
-            // al primer gesto, desmuteamos con fade
-            const unlock = async () => {
-            document.removeEventListener('click', unlock, true);
-            document.removeEventListener('touchstart', unlock, true);
-            document.removeEventListener('keydown', unlock, true);
-            audio.muted = false;
-            audio.volume = 0;
-            await fadeTo(TARGET_VOL, 300);
-            };
-            document.addEventListener('click', unlock, true);
-            document.addEventListener('touchstart', unlock, true);
-            document.addEventListener('keydown', unlock, true);
-            return false;
-        } catch (err) {
-            setBtnState(false);
-            return false;
-        }
+        }catch{
+        setBtnState(false);
+        return false;
         }
     }
 
+    // Unmute con fade (usa tras el primer gesto o cuando el user toca el botón)
+    async function unmuteWithFade(){
+        try{
+        audio.muted = false;
+        if (audio.paused) await audio.play();  // en iOS puede requerir este play explícito
+        audio.volume = 0;
+        await fadeTo(TARGET_VOL, 320);
+        setBtnState(true);
+        }catch{
+        // si algo falla, mantenemos el estado visual coherente
+        setBtnState(false);
+        }
+    }
+
+    // Pausa bonita
     async function pauseMusic(){
+        try{
         await fadeTo(0, 160);
         audio.pause();
         setBtnState(false);
-        audio.volume = TARGET_VOL;
+        }finally{
+        audio.volume = TARGET_VOL; // deja listo para la próxima
+        }
     }
 
-    // Click del botón: toggle
+    // Primer gesto global = desbloqueo + desmute si el user quiere música
+    function installGlobalUnlockOnce(){
+        const doc = document;
+        const unlock = async () => {
+        doc.removeEventListener('pointerdown', unlock, true);
+        doc.removeEventListener('keydown', unlock, true);
+        await primeAudioChain();
+        if (wantsMusic()){
+            await unmuteWithFade();
+        }
+        };
+        // pointerdown cubre click y touch en iOS/Android
+        doc.addEventListener('pointerdown', unlock, true);
+        // keydown por si es desktop
+        doc.addEventListener('keydown', unlock, true);
+    }
+
+    // Click del botón flotante: toggle
     btn.addEventListener('click', async () => {
+        if (audio.paused || audio.muted){
+        setWantsMusic(true);
+        await primeAudioChain();
+        // Si no está reproduciendo (o está muteado), asegúrate de ponerlo a andar y desmutear
         if (audio.paused) {
-        // si estaba pausado, intentamos reproducir con sonido
-        const wasMuted = audio.muted;
-        const ok = await hardAutoStart();
-        if (!wasMuted && ok) await fadeTo(TARGET_VOL, 200);
-        } else {
+            try{ await audio.play(); }catch{}
+        }
+        await unmuteWithFade();
+        }else{
+        setWantsMusic(false);
         await pauseMusic();
-        audio.muted = true; // para evitar bloqueos la próxima vez
+        audio.muted = true; // evita bloqueos en el siguiente arranque
         }
     });
 
-    // Mostrar/ocultar como el botón "Volver arriba"
-    (function linkToToTopBehavior(){
-        const showAfter = 600;
-        const show = () => { btn.style.opacity = '1'; btn.style.transform = 'translateY(0)'; };
-        const hide = () => { btn.style.opacity = '0'; btn.style.transform = 'translateY(6px)'; };
-        const toggle = () => (window.scrollY > showAfter ? show() : hide());
-        toggle(); window.addEventListener('scroll', toggle);
-    })();
-
-    // Pausar mientras el video se reproduce; reanudar al pausar/terminar
-    let shouldResumeAfterVideo = false;
-    if (video) {
+    // Reanudar música tras pausar/terminar el video (solo si estaba activa)
+    let resumeAfterVideo = false;
+    if (video){
         video.addEventListener('play', async () => {
-        if (!audio.paused) { shouldResumeAfterVideo = true; await pauseMusic(); }
-        else shouldResumeAfterVideo = false;
+        resumeAfterVideo = !audio.paused && wantsMusic();
+        if (resumeAfterVideo) await pauseMusic();
         });
-        video.addEventListener('pause', async () => {
-        if (shouldResumeAfterVideo) { await hardAutoStart(); shouldResumeAfterVideo = false; }
-        });
-        video.addEventListener('ended', async () => {
-        if (shouldResumeAfterVideo) { await hardAutoStart(); shouldResumeAfterVideo = false; }
-        });
+        const tryResume = async () => {
+        if (resumeAfterVideo && wantsMusic()){
+            await primeAudioChain();
+            // Asegura reproducción y desmute con fade
+            try{ await audio.play(); }catch{}
+            await unmuteWithFade();
+        }
+        resumeAfterVideo = false;
+        };
+        video.addEventListener('pause', tryResume);
+        video.addEventListener('ended', tryResume);
     }
 
-    // >>> Arranca al cargar la página <<<
-    hardAutoStart();
+    // Arranque
+    (async function boot(){
+        // Estado inicial del botón
+        setBtnState(wantsMusic());
+
+        // Intenta autoplay (muteado, permitido por políticas)
+        if (wantsMusic()){
+        await autoplayMuted();
+        }else{
+        // Si el user la tenía apagada, mantenla pausada/muteada
+        try{ audio.pause(); }catch{}
+        audio.muted = true;
+        setBtnState(false);
+        }
+
+        // Instala el “unlock” del primer gesto para desmutear con fade
+        installGlobalUnlockOnce();
+
+        // Si el audio se cargó posterior al play, reintenta (algunas veces iOS requiere canplay)
+        audio.addEventListener('canplay', async ()=>{
+        if (wantsMusic() && audio.paused){
+            try{ await audio.play(); }catch{}
+        }
+        });
+    })();
 })();
+
 
 
 
