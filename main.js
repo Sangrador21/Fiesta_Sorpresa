@@ -70,7 +70,7 @@ const CONFIG = {
     direccion: 'Salón de Fiestas: Ubicado a un costado de la Parroquia de San Agustín de Hipona',
     mapsEmbed: 'https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d3758.922177104802!2d-99.2744894!3d19.5878345!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x85d21c74845a79af%3A0xc9ad05d37432a3b2!2sParroquia%20de%20San%20Agustin%20de%20Hipona!5e0!3m2!1ses-419!2smx!4v1754612072932!5m2!1ses-419!2smx',
     rsvpPhone: '525540118688',
-    rsvpNombre: 'Yael Sangrador',
+    // rsvpNombre: 'Yael Sangrador',
     pdfUrl: 'Rafaela_Flores_Invitacion.pdf',
     videoUrl: 'Rafaela_Flores_Video.mp4',
 
@@ -137,14 +137,57 @@ function fechaBonita(date) {
     setSrc('videoAbue', CONFIG.videoUrl);
     setSrc('iframeMapa', CONFIG.mapsEmbed);
 
-    // WhatsApp
-    const msg = `Hola, soy ${CONFIG.rsvpNombre}. Confirmo mi asistencia a la fiesta sorpresa de ${CONFIG.nombreAbue} (${CONFIG.edad} años) el ${f.fecha} a las ${f.hora}. ¡Allí estaré a tiempo!`;
-    const wa = `https://wa.me/${CONFIG.rsvpPhone}?text=${encodeURIComponent(msg)}`;
-    ['btnRSVP','btnRSVP2','btnRSVP3'].forEach(id => {
+    // // WhatsApp
+    // const msg = `Hola, soy ${CONFIG.rsvpNombre}. Confirmo mi asistencia a la fiesta sorpresa de ${CONFIG.nombreAbue} (${CONFIG.edad} años) el ${f.fecha} a las ${f.hora}. ¡Allí estaré a tiempo!`;
+    // const wa = `https://wa.me/${CONFIG.rsvpPhone}?text=${encodeURIComponent(msg)}`;
+    // ['btnRSVP','btnRSVP2','btnRSVP3'].forEach(id => {
+    //     const el = document.getElementById(id);
+    //     if (el) el.href = wa;
+    // });
+})();
+
+// ===== WhatsApp dinámico con nombre del invitado =====
+(function setupRSVP(){
+    const ids = ['btnRSVP','btnRSVP2','btnRSVP3']; // el que no exista se ignora
+
+    // Guarda/lee el nombre localmente
+    const getSavedName = () => localStorage.getItem('guestName') || '';
+    const saveName = (n) => n && localStorage.setItem('guestName', n);
+
+    // Intenta usar el nombre del campo "Tu nombre" del libro de dedicatorias si existe
+    const getNameFromForm = () => (document.getElementById('dNombre')?.value || '').trim();
+
+    const f = fechaBonita(CONFIG.fechaISO);
+    const buildWA = (name) => {
+        const quien = name && name.length ? name : 'Yo';
+        const msg = `Hola, soy ${quien}. Confirmo mi asistencia a la fiesta sorpresa de ${CONFIG.nombreAbue} (${CONFIG.edad} años) el ${f.fecha} a las ${f.hora}. ¡Allí estaré a tiempo!`;
+        return `https://wa.me/${CONFIG.rsvpPhone}?text=${encodeURIComponent(msg)}`;
+    };
+
+    ids.forEach(id => {
         const el = document.getElementById(id);
-        if (el) el.href = wa;
+        if (!el) return;
+
+        el.addEventListener('click', (e) => {
+            let name = getNameFromForm() || getSavedName();
+            if (!name) {
+                const sugerido = getSavedName() || '';
+                const input = prompt('¿Cómo te llamas para la confirmación?', sugerido);
+                if (input) { name = input.trim(); saveName(name); }
+            }
+            const url = buildWA(name);
+
+            // Abrimos de forma explícita según target para garantizar navegación
+            e.preventDefault();
+            if (el.target === '_blank') {
+                window.open(url, '_blank', 'noopener');  // abrir en nueva pestaña
+            } else {
+                location.href = url;                     // misma pestaña
+            }
+        });
     });
 })();
+
 
 // ==========================
 // Slider
@@ -690,7 +733,7 @@ document.addEventListener("DOMContentLoaded", () => {
 })();
 
 
-// Botón "Volver arriba" elegante sin CSS externo
+// Botón "Volver arriba"
 (function () {
     const toTop = document.getElementById('toTop');
     if (!toTop) return;
@@ -835,10 +878,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Al hacer click en miniatura, abrir el lightbox en ese índice global
     document.querySelectorAll('[data-album-idx]').forEach(a => {
-        a.addEventListener('click', () => {
-        const idx = Number(a.dataset.albumIdx || 0);
-        const car = bootstrap.Carousel.getOrCreateInstance(document.getElementById('lightboxCarousel'));
-        car.to(idx);
+        a.addEventListener('click', (ev) => {
+            ev.preventDefault(); // evita el salto por "#"
+            const idx = Number(a.dataset.albumIdx || 0);
+            const car = bootstrap.Carousel.getOrCreateInstance(document.getElementById('lightboxCarousel'));
+            car.to(idx);
         });
     });
 
