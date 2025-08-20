@@ -41,6 +41,11 @@
     .protect::after{
         content:""; position:absolute; inset:0; background: transparent;
     }
+
+    /* Evita auto-zoom en Android y cualquier scroll horizontal fantasma */
+    html{ -webkit-text-size-adjust:100%; text-size-adjust:100%; }
+    html,body{ max-width:100%; overflow-x:hidden; }
+
     </style>
 </head>
 
