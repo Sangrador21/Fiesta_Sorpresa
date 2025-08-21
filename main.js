@@ -62,7 +62,7 @@ const CONFIG = {
     pdfUrl: 'Rafaela_Flores_Invitacion.pdf',
     videoUrl: 'Rafaela_Flores_Video.mp4',
 
-    musicUrl: 'Ojitos_Mentirosos.mp3',
+    musicUrl: 'Duomo_Wildest_Dreams.mp3',
 
     mapsLink: 'https://maps.app.goo.gl/az2jSaFsnQRzbPfo8',
     mapsLat: '',      
