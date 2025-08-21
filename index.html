@@ -561,16 +561,18 @@
 
     <!-- Wrapper fijo para los botones flotantes -->
     <div class="position-fixed d-flex align-items-end gap-2" style="z-index:1030; right: max(1rem, env(safe-area-inset-right, 0px) + .5rem); bottom: max(1rem, env(safe-area-inset-bottom, 0px) + .5rem);">
-        <!-- Música -->
-        <button id="btnMusicFloat" class="btn btn-warning rounded-circle d-flex align-items-center justify-content-center shadow p-0" type="button" aria-label="Música" aria-pressed="true" style="width:52px;height:52px;opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease;">
-            <i id="iconMusic" class="bi bi-music-note-beamed fs-5"></i>
-        </button>
 
-        <!-- Volver arriba -->
-        <button id="toTop" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center shadow p-0" aria-label="Volver arriba" style="width:52px;height:52px;opacity:0;transform:translateY(6px);transition:opacity .2s ease,transform .2s ease;">
+        <!-- Volver arriba (queda a la izquierda) -->
+        <button id="toTop" class="btn btn-success rounded-circle d-flex align-items-center justify-content-center shadow p-0" aria-label="Volver arriba" style="width:52px;height:52px;opacity:0;transform:translateY(6px); transition:opacity .2s ease,transform .2s ease;">
             <i class="bi bi-arrow-up fs-5"></i>
         </button>
+
+        <!-- Música (queda a la derecha) -->
+        <button id="btnMusicFloat" class="btn btn-warning rounded-circle d-flex align-items-center justify-content-center shadow p-0" type="button" aria-label="Música" aria-pressed="true" style="width:52px;height:52px;opacity:1;transform:translateY(0); transition:opacity .2s ease,transform .2s ease;">
+            <i id="iconMusic" class="bi bi-music-note-beamed fs-5"></i>
+        </button>
     </div>
+
 
     <!-- Audio -->
     <audio id="bgMusic" preload="auto" loop autoplay muted playsinline></audio>
@@ -618,7 +620,6 @@
             </div>
         </div>
     </div>
-
     
 </body>
 </html>

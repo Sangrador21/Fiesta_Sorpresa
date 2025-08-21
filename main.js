@@ -1,3 +1,12 @@
+//****************************************************************
+// main.js
+// V 1.0 20 Agosto 2025
+// Autor:
+// Sangrador Curiel Yael Sebastian
+// (C) 11 de Agosto de 2025
+// SACY 
+//*****************************************************************
+
 // ==========================
 // IMPORTS Firebase por CDN (v12.1.0)
 // ==========================
@@ -31,7 +40,7 @@ const db = getFirestore(app);
 // const analytics = getAnalytics(app);
 
 // === ÚNICO ADMIN POR CORREO ===
-const ADMIN_EMAIL = "yaelsangrador16@gmail.com"; // <-- cámbialo por el tuyo
+const ADMIN_EMAIL = "yaelsangrador16@gmail.com";
 
 // Toast global reutilizable
 window.showToast = function (msg, type = 'success') {
@@ -44,7 +53,6 @@ window.showToast = function (msg, type = 'success') {
     body.textContent = msg;
     bootstrap.Toast.getOrCreateInstance(el, { delay: 3500 }).show();
 };
-
 
 // ==========================
 // CONFIGURACIÓN RÁPIDA (datos del evento)
@@ -62,7 +70,7 @@ const CONFIG = {
     pdfUrl: 'Rafaela_Flores_Invitacion.pdf',
     videoUrl: 'Rafaela_Flores_Video.mp4',
 
-    musicUrl: 'Duomo_Wildest_Dreams.mp3?v=1',
+    musicUrl: 'Duomo_Wildest_Dreams.mp3',
 
     mapsLink: 'https://maps.app.goo.gl/az2jSaFsnQRzbPfo8',
     mapsLat: '',      
@@ -127,13 +135,6 @@ function fechaBonita(date) {
     setSrc('videoAbue', CONFIG.videoUrl);
     setSrc('iframeMapa', CONFIG.mapsEmbed);
 
-    // // WhatsApp
-    // const msg = `Hola, soy ${CONFIG.rsvpNombre}. Confirmo mi asistencia a la fiesta sorpresa de ${CONFIG.nombreAbue} (${CONFIG.edad} años) el ${f.fecha} a las ${f.hora}. ¡Allí estaré a tiempo!`;
-    // const wa = `https://wa.me/${CONFIG.rsvpPhone}?text=${encodeURIComponent(msg)}`;
-    // ['btnRSVP','btnRSVP2','btnRSVP3'].forEach(id => {
-    //     const el = document.getElementById(id);
-    //     if (el) el.href = wa;
-    // });
 })();
 
 // ===== WhatsApp dinámico con nombre del invitado =====
@@ -185,9 +186,8 @@ document.getElementById('dNombre')?.addEventListener('input', (e) => {
 
 
 // ==========================
-// Slider
+// Slider (Sincroniza los indicadores con la cantidad de slides del carrusel)
 // ==========================
-// Sincroniza los indicadores con la cantidad de slides del carrusel
 (function syncCarouselIndicators(){
     const SHOW_DOTS = false; // Puntos 
     const car = document.getElementById('clubesCarousel');
@@ -265,7 +265,6 @@ const adminModalEl   = document.getElementById('adminModal');
 const adminEmailInp  = document.getElementById('adminEmail');
 const adminErrorBox  = document.getElementById('adminError');
 const btnGoogleLogin = document.getElementById('btnGoogleLogin');
-
 
 
 cmdAdminOpen?.addEventListener('click', () => {
@@ -531,7 +530,7 @@ cmdAdminLogout?.addEventListener('click', async () => {
             // Feedback visual
             showToast('¡Tu dedicatoria fue enviada! 🎉', 'success');
 
-            // (Opcional) Caja verde dentro del listado para invitados
+            // Caja verde dentro del listado para invitados
             if (!STATE.isAdmin) {
             const ok = document.createElement('div');
             ok.className = 'alert alert-success mt-2';
@@ -625,23 +624,38 @@ const CAL_CFG = {
     // Inicio local (24h): AAAA-MM-DDTHH:mm
     inicioLocal: "2025-10-25T14:30",
     duracionMin: 630, // (Minutos)
+    avisos: ['-P1D'] // 1 día antes
 };
 
 // ====== Utilidades ======
 const pad = n => String(n).padStart(2,"0");
 const fmtGoogle = d =>
-    d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) +
-    "T" + pad(d.getHours()) + pad(d.getMinutes()) + pad(d.getSeconds());
-const fmtICS = d =>
-    d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) +
-    "T" + pad(d.getHours()) + pad(d.getMinutes()) + "00";
+    d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+
+    "T"+pad(d.getHours())+pad(d.getMinutes())+pad(d.getSeconds());
 
-// ====== Crear enlaces ======
+// DTSTAMP en UTC con Z
+const fmtUTC = d =>
+    d.getUTCFullYear()+pad(d.getUTCMonth()+1)+pad(d.getUTCDate())+
+    "T"+pad(d.getUTCHours())+pad(d.getUTCMinutes())+pad(d.getUTCSeconds())+"Z";
+
+// Fecha local para DTSTART/DTEND sin segundos
+const fmtLocalNoSec = d =>
+    d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate())+
+    "T"+pad(d.getHours())+pad(d.getMinutes())+"00";
+
+// Escapar según RFC 5545
+const escICS = s => String(s)
+    .replace(/\\/g,'\\\\')
+    .replace(/,/g,'\\,')
+    .replace(/;/g,'\\;')
+    .replace(/\n/g,'\\n');
+
+// ====== Crear enlaces (reemplaza esta función) ======
 function buildCalendarLinks(cfg){
     const start = new Date(cfg.inicioLocal);
     const end   = new Date(start.getTime() + (cfg.duracionMin||120)*60000);
 
-  // Google Calendar
+    // Google Calendar (no permite recordatorios por URL)
     const gcal = new URL("https://calendar.google.com/calendar/render");
     gcal.searchParams.set("action","TEMPLATE");
     gcal.searchParams.set("text", cfg.titulo);
@@ -650,25 +664,37 @@ function buildCalendarLinks(cfg){
     gcal.searchParams.set("ctz", cfg.zona);
     gcal.searchParams.set("dates", `${fmtGoogle(start)}/${fmtGoogle(end)}`);
 
-  // ICS
-    const ics =
-    `BEGIN:VCALENDAR
-    VERSION:2.0
-    PRODID:-//SACY//Fiesta Rafaela//ES
-    CALSCALE:GREGORIAN
-    METHOD:PUBLISH
-    BEGIN:VEVENT
-    UID:${Date.now()}@sacy
-    DTSTAMP:${fmtICS(new Date())}
-    DTSTART:${fmtICS(start)}
-    DTEND:${fmtICS(end)}
-    SUMMARY:${cfg.titulo}
-    DESCRIPTION:${cfg.detalles}
-    LOCATION:${cfg.lugar}
-    END:VEVENT
-    END:VCALENDAR`;
+    // ICS sin sangrías y con CRLF
+    const lines = [
+        "BEGIN:VCALENDAR",
+        "VERSION:2.0",
+        "PRODID:-//SACY//Fiesta Rafaela//ES",
+        "CALSCALE:GREGORIAN",
+        "METHOD:PUBLISH",
+        `X-WR-TIMEZONE:${cfg.zona}`,
+        "BEGIN:VEVENT",
+        `UID:${Date.now()}@sacy`,
+        `DTSTAMP:${fmtUTC(new Date())}`,
+        `DTSTART;TZID=${cfg.zona}:${fmtLocalNoSec(start)}`,
+        `DTEND;TZID=${cfg.zona}:${fmtLocalNoSec(end)}`,
+        `SUMMARY:${escICS(cfg.titulo)}`,
+        `DESCRIPTION:${escICS(cfg.detalles)}`,
+        `LOCATION:${escICS(cfg.lugar)}`
+    ];
 
-    const blob = new Blob([ics], {type: "text/calendar;charset=utf-8"});
+    // VALARM (ej.: ['-P1D', '-PT2H'])
+    (cfg.avisos||[]).forEach(tr => {
+        lines.push("BEGIN:VALARM");
+        lines.push("ACTION:DISPLAY");
+        lines.push(`TRIGGER:${tr}`);
+        lines.push("DESCRIPTION:Recordatorio");
+        lines.push("END:VALARM");
+    });
+
+    lines.push("END:VEVENT","END:VCALENDAR");
+
+    const ics = lines.join("\r\n"); // CRLF para máxima compatibilidad
+    const blob = new Blob([ics], { type: "text/calendar; charset=utf-8" });
     const urlICS = URL.createObjectURL(blob);
 
     return { gcal: gcal.toString(), ics: urlICS };
@@ -696,13 +722,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return;
     }
 
-    // 2) Coordenadas exactas (si algún día las pones)
+    // 2) Coordenadas exactas
     if (CONFIG.mapsLat && CONFIG.mapsLng) {
         btn.href = `https://www.google.com/maps/dir/?api=1&destination=${CONFIG.mapsLat},${CONFIG.mapsLng}`;
         return;
     }
 
-    // 3) place_id (opcional)
+    // 3) place_id
     if (CONFIG.mapsPlaceId) {
         btn.href = `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(CONFIG.lugar)}&query_place_id=${CONFIG.mapsPlaceId}`;
         return;
@@ -757,7 +783,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const video = document.getElementById('videoAbue');
     if (!btn || !audio) return;
 
-    // Fuente desde tu CONFIG
+    // Fuente desde CONFIG
     if (CONFIG?.musicUrl) audio.src = CONFIG.musicUrl;
 
     // Preferencia del usuario (true por defecto)
@@ -782,13 +808,12 @@ document.addEventListener("DOMContentLoaded", () => {
         btn.style.opacity = '1';
         btn.style.transform = 'translateY(0)';
     }
-    function hideBtn(){
-        btn.style.opacity = '0';
-        btn.style.transform = 'translateY(6px)';
-    }
-    const showAfter = 600;
-    const toggleFloaters = () => (window.scrollY > showAfter ? (showBtn(),0) : (hideBtn(),0));
-    toggleFloaters(); window.addEventListener('scroll', toggleFloaters);
+
+    // Mostrar SIEMPRE el botón de música desde el inicio
+    showBtn();
+
+    // Al terminar de cargar por si algo bloquea el primer repintado:
+    window.addEventListener('load', showBtn);
 
     // Fade de volumen suave
     function fadeTo(targetVol = 0, ms = 280){
@@ -967,8 +992,6 @@ document.addEventListener("DOMContentLoaded", () => {
     } catch {}
 
 })();
-
-
 
 
 // ===== Álbum paginado + lightbox =====
