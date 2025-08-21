@@ -62,7 +62,7 @@ const CONFIG = {
     pdfUrl: 'Rafaela_Flores_Invitacion.pdf',
     videoUrl: 'Rafaela_Flores_Video.mp4',
 
-    musicUrl: 'Duomo_Wildest_Dreams.mp3',
+    musicUrl: 'Duomo_Wildest_Dreams.mp3?v=1',
 
     mapsLink: 'https://maps.app.goo.gl/az2jSaFsnQRzbPfo8',
     mapsLat: '',      
@@ -938,6 +938,34 @@ document.addEventListener("DOMContentLoaded", () => {
         }
         });
     })();
+
+    // Aviso one-shot para activar sonido (tooltip + toast)
+    try {
+    if (!localStorage.getItem('tipMusicSeen')) {
+            // Tooltip en el botón flotante
+            const tip = bootstrap.Tooltip.getOrCreateInstance(btn, {
+            title: 'Toca aquí para activar sonido',
+            trigger: 'manual',
+            placement: 'left'
+            });
+            tip.show();
+            // También un toast breve
+            showToast?.('La música inicia en silencio. Toca el botón 🔊 para activarla.', 'warning');
+
+            // Oculta el tooltip a los 4s y márcalo como visto
+            setTimeout(() => {
+            try { tip.hide(); tip.dispose(); } catch {}
+            localStorage.setItem('tipMusicSeen', '1');
+            }, 4000);
+
+            // Si el usuario toca el botón, márcalo como visto inmediatamente
+            btn.addEventListener('click', () => {
+            localStorage.setItem('tipMusicSeen', '1');
+            try { tip.hide(); tip.dispose(); } catch {}
+            }, { once: true });
+        }
+    } catch {}
+
 })();
 
 
